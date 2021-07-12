@@ -1,20 +1,44 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Home from "../views/Home.vue";
 
 const routes = [
   {
     path: "/",
-    name: "Home",
-    component: Home,
+    redirect: "/login",
   },
   {
-    path: "/about",
-    name: "About",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue"),
+    path: "/login",
+    name: "Login",
+    component: () => import("../views/auth/Login.vue"),
+  },
+  {
+    path: "/posts",
+    name: "Posts",
+    component: () => import("../views/post/post-list/PostList.vue"),
+  },
+  // {
+  //   path: "/posts/create",
+  //   name: "CreatePost",
+  //   component: () => import("../views/post/create-post/CreatePost.vue"),
+  // },
+  // {
+  //   path: "/posts/:id",
+  //   name: "PostDetail",
+  //   component: () => import("../views/post/post-detail/PostDetail.vue"),
+  // },
+  {
+    path: "/users",
+    name: "Users",
+    component: () => import("../views/user/user-list/UserList.vue"),
+  },
+  {
+    path: "/todos",
+    name: "Todos",
+    component: () => import("../views/todo/todo-list/TodoList.vue"),
+  },
+  {
+    path: "/weather",
+    name: "Weather",
+    component: () => import("../views/weather/Weather.vue"),
   },
 ];
 
