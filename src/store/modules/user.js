@@ -1,4 +1,6 @@
 import userAPI from "../../api/users/users";
+import useCommon from "../../util/useCommon";
+const { updateLoadingStatus } = useCommon();
 const userModule = {
   namespaced: true,
   state: () => ({
@@ -18,7 +20,8 @@ const userModule = {
         role: "admin",
       },
     ],
-    isLoggin: true,
+    authUser: {},
+    isLoggin: false,
     isDarkMode: false,
   }),
   mutations: {
@@ -58,7 +61,11 @@ const userModule = {
       );
       if (index !== -1) {
         state.isLoggin = true;
+        state.authUser = state.loginUser[index];
       }
+    },
+    logout(state, value) {
+      state.isLoggin = value;
     },
   },
   actions: {
@@ -66,37 +73,50 @@ const userModule = {
       commit("changeMode", dayOrNight);
     },
     createUser({ commit }, user) {
+      updateLoadingStatus({ loading: true });
       userAPI.createUser(user).then((response) => {
         console.log("users res :: ", response.data);
+        updateLoadingStatus({ loading: false });
         commit("createUser", response.data);
       });
     },
     updateUser({ commit }, user) {
+      updateLoadingStatus({ loading: true });
       userAPI.updateUser(user).then((response) => {
+        updateLoadingStatus({ loading: false });
         console.log("users res :: ", response.data);
         commit("updateUser", user);
       });
     },
     deleteUser({ commit }, id) {
+      updateLoadingStatus({ loading: true });
       userAPI.deleteUser(id).then((response) => {
+        updateLoadingStatus({ loading: false });
         console.log("users res :: ", response.data);
         commit("deleteUser", id);
       });
     },
     getUserList({ commit }) {
+      updateLoadingStatus({ loading: true });
       userAPI.getUserList().then((response) => {
+        updateLoadingStatus({ loading: false });
         console.log("users res :: ", response.data);
         commit("getUserList", response.data);
       });
     },
     getUserByID({ commit }, id) {
+      updateLoadingStatus({ loading: true });
       userAPI.getUserByID(id).then((response) => {
+        updateLoadingStatus({ loading: false });
         console.log("users res :: ", response.data);
         commit("getUserByID", id);
       });
     },
     login({ commit }, user) {
       commit("login", user);
+    },
+    logout({ commit }, value) {
+      commit("logout", value);
     },
   },
 };

@@ -1,10 +1,4 @@
 <template>
-  <div
-    class="fixed-center q-mt-lg"
-    v-if="Object.entries(weather).length === 0 || searching"
-  >
-    <q-spinner-dots color="blue" size="5.5em" />
-  </div>
   <div v-if="Object.entries(weather).length > 0" class="q-mt-lg q-mx-md">
     <q-input
       outlined
@@ -23,7 +17,7 @@
       </template>
     </q-input>
   </div>
-  <div v-if="Object.entries(weather).length > 0 && !searching" class="q-pa-md">
+  <div v-if="Object.entries(weather).length > 0" class="q-pa-md">
     <div
       class="row justify-center rounded my-card text-white"
       :class="isDarkMode && 'bg-grey-9'"
@@ -43,11 +37,11 @@
       </div>
     </div>
   </div>
-  <q-banner v-if="cityNotFound" class="text-white bg-red q-mx-md">
+  <q-banner v-if="commonState.error" class="text-white bg-red q-mx-md">
     {{ searchKeyword }} city is not found.
   </q-banner>
 </template>
 
-<script src="./weather" />
+<script src="./weather.js" />
 
 <style></style>

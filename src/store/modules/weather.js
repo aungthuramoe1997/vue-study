@@ -1,29 +1,29 @@
 import weatherAPI from "../../api/weather/weather";
+import useCommon from "../../util/useCommon";
+const { updateLoadingStatus, updateErrorStatus } = useCommon();
 const weatherModule = {
   namespaced: true,
   state: () => ({
     weather: {},
-    weatherNotFound: false,
   }),
   mutations: {
     getWeatherByCity(state, weatherData) {
-      state.weatherNotFound = false;
       state.weather = weatherData;
-    },
-    searchError(state, val) {
-      state.weatherNotFound = val;
     },
   },
   actions: {
     getWeatherByCity({ commit }, city) {
-      console.log("get weather by city ", city);
+      updateLoadingStatus({ loading: true });
       weatherAPI
         .getWeatherByCity(city)
         .then((response) => {
           console.log("weather res :: ", response);
           commit("getWeatherByCity", response.data);
         })
-        .catch(() => commit("searchError", true));
+        .catch(() => updateErrorStatus({ error: true }))
+        .finally(() => {
+          updateLoadingStatus({ loading: false });
+        });
     },
   },
 };

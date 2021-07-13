@@ -1,10 +1,11 @@
 import postAPI from "../../api/posts/posts";
+import useCommon from "../../util/useCommon";
+const { updateLoadingStatus, updateErrorStatus } = useCommon();
 const postModule = {
   namespaced: true,
   state: () => ({
     post: {},
     posts: [],
-    loading: true,
   }),
   mutations: {
     createPost(state, post) {
@@ -27,7 +28,6 @@ const postModule = {
     },
     getPostList(state, posts) {
       state.posts = posts;
-      state.loading = false;
     },
     getPostByID(state, post) {
       state.post = post;
@@ -35,41 +35,78 @@ const postModule = {
   },
   actions: {
     createPost({ commit }, post) {
-      postAPI.createPost(post).then((response) => {
-        console.log("posts res :: ", response.data);
-        commit("createPost", response.data);
-      });
+      updateLoadingStatus({ loading: true });
+      postAPI
+        .createPost(post)
+        .then((response) => {
+          console.log("posts res :: ", response.data);
+          updateLoadingStatus({ loading: false });
+          commit("createPost", response.data);
+        })
+        .catch(() => {
+          updateErrorStatus({ error: true });
+        });
     },
     updatePost({ commit }, post) {
-      postAPI.updatePost(post).then((response) => {
-        console.log("posts res :: ", response.data);
-        commit("updatePost", post);
-      });
+      updateLoadingStatus({ loading: true });
+      postAPI
+        .updatePost(post)
+        .then((response) => {
+          console.log("posts res :: ", response.data);
+          updateLoadingStatus({ loading: false });
+          commit("updatePost", post);
+        })
+        .catch(() => {
+          updateErrorStatus({ error: true });
+        });
     },
     deletePost({ commit }, id) {
-      postAPI.deletePost(id).then((response) => {
-        console.log("posts res :: ", response.data);
-        commit("deletePost", id);
-      });
+      updateLoadingStatus({ loading: true });
+      postAPI
+        .deletePost(id)
+        .then((response) => {
+          console.log("posts res :: ", response.data);
+          commit("deletePost", id);
+        })
+        .catch(() => {
+          updateErrorStatus({ error: true });
+        })
+        .finally(() => {
+          updateLoadingStatus({ loading: false });
+        });
     },
     getPostList({ commit }) {
-      postAPI.getPostList().then((response) => {
-        console.log("posts res :: ", response.data);
-        commit("getPostList", response.data);
-      });
+      updateLoadingStatus({ loading: true });
+      postAPI
+        .getPostList()
+        .then((response) => {
+          console.log("posts res :: ", response.data);
+          commit("getPostList", response.data);
+        })
+        .catch(() => {
+          updateErrorStatus({ error: true });
+        })
+        .finally(() => {
+          updateLoadingStatus({ loading: false });
+        });
     },
     getPostByID({ commit }, id) {
-      postAPI.getPostByID(id).then((response) => {
-        console.log("posts res :: ", response.data);
-        commit("getPostByID", response.data);
-      });
+      updateLoadingStatus({ loading: true });
+      postAPI
+        .getPostByID(id)
+        .then((response) => {
+          console.log("posts res :: ", response.data);
+          commit("getPostByID", response.data);
+        })
+        .catch(() => {
+          updateErrorStatus({ error: true });
+        })
+        .finally(() => {
+          updateLoadingStatus({ loading: false });
+        });
     },
   },
-  getters: {
-    loadingStatus(state) {
-      return state.loading;
-    },
-  },
+  getters: {},
 };
 
 export default postModule;

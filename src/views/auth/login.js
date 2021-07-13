@@ -26,10 +26,14 @@ export default {
     const login = () => {
       console.log("user ", user);
       store.dispatch("userModule/login", user);
-      if (loginStatus === true) {
-        router.push({ name: "Posts" });
+      if (loginStatus.value === true) {
+        router.push({ name: "Weather" });
       }
     };
+
+    const isDarkMode = computed(() => {
+      return store.state.userModule.isDarkMode;
+    });
 
     //Validation Rule
     // const rules = {
@@ -50,6 +54,7 @@ export default {
     return {
       ...toRefs(user),
       login,
+      isDarkMode,
     };
   },
 };

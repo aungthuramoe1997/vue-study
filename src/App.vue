@@ -3,7 +3,7 @@
     <Login />
   </div>
 
-  <q-layout v-else view="lHh Lpr lFf" :class="isDarkMode && 'bg-dark'">
+  <q-layout v-else view="lHh Lpr lFf" :class="isDarkMode && 'bg-black'">
     <q-header elevated class="glossy" :class="isDarkMode && 'bg-dark'">
       <q-toolbar>
         <q-btn
@@ -15,9 +15,7 @@
           icon="menu"
         />
 
-        <q-toolbar-title> Quasar App </q-toolbar-title>
-
-        <div>Quasar version {{ $q.version }}</div>
+        <q-toolbar-title> {{ title }} </q-toolbar-title>
       </q-toolbar>
     </q-header>
 
@@ -27,101 +25,91 @@
       bordered
       :class="isDarkMode && 'bg-dark text-white'"
     >
-      <q-list>
-        <q-item-label class="text-center" header>Quasar Study</q-item-label>
-        <q-item clickable>
-          <q-item-section avatar>
-            <q-icon name="dark_mode" />
-          </q-item-section>
-          <q-item-section>
-            <q-toggle
-              size="xl"
-              v-model="isDarkMode"
-              @click="changeMode"
-              checked-icon="dark_mode"
-              unchecked-icon="wb_sunny"
-            />
-          </q-item-section>
-        </q-item>
-        <q-item clickable :to="{ name: 'Weather' }" exact>
-          <q-item-section avatar>
-            <q-icon name="cloud" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Weather</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item clickable :to="{ name: 'Posts' }" exact>
-          <q-item-section avatar>
-            <q-icon name="assignment" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Posts</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item clickable :to="{ name: 'Todos' }" exact>
-          <q-item-section avatar>
-            <q-icon name="task" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Todos</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item clickable :to="{ name: 'Users' }" exact>
-          <q-item-section avatar>
-            <q-icon name="people" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Users</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item>
-          <q-item-section avatar>
-            <q-icon name="logout" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Logout</q-item-label>
-          </q-item-section>
-        </q-item>
-      </q-list>
+      <q-img
+        class="absolute-top"
+        src="https://cdn.quasar.dev/img/material.png"
+        style="height: 150px"
+      >
+        <div class="absolute-bottom bg-transparent">
+          <q-avatar size="56px" class="q-mb-sm">
+            <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+          </q-avatar>
+          <div class="text-weight-bold">{{ user.name }}</div>
+          <div>{{ user.email }}</div>
+        </div>
+      </q-img>
+      <q-scroll-area
+        style="
+          height: calc(100% - 150px);
+          margin-top: 150px;
+          border-right: 1px solid #ddd;
+        "
+      >
+        <q-list>
+          <q-item clickable>
+            <q-item-section avatar>
+              <q-icon :name="isDarkMode ? 'dark_mode' : 'wb_sunny'" />
+            </q-item-section>
+            <q-item-section>
+              <q-toggle
+                size="xl"
+                v-model="isDarkMode"
+                @click="changeMode"
+                checked-icon="dark_mode"
+                unchecked-icon="wb_sunny"
+              />
+            </q-item-section>
+          </q-item>
+          <q-item clickable :to="{ name: 'Weather' }" exact>
+            <q-item-section avatar>
+              <q-icon name="cloud" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>Weather</q-item-label>
+            </q-item-section>
+          </q-item>
+          <q-item clickable :to="{ name: 'Posts' }" exact>
+            <q-item-section avatar>
+              <q-icon name="assignment" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>Posts</q-item-label>
+            </q-item-section>
+          </q-item>
+          <q-item clickable :to="{ name: 'Todos' }" exact>
+            <q-item-section avatar>
+              <q-icon name="task" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>Todos</q-item-label>
+            </q-item-section>
+          </q-item>
+          <q-item clickable :to="{ name: 'Users' }" exact>
+            <q-item-section avatar>
+              <q-icon name="people" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>Users</q-item-label>
+            </q-item-section>
+          </q-item>
+          <q-item>
+            <q-item-section avatar>
+              <q-icon name="logout" />
+            </q-item-section>
+            <q-item-section @click="logout">
+              <q-item-label>Logout</q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </q-scroll-area>
     </q-drawer>
     <div>
       <MainContent />
+      <div class="text-center" v-show="commonState.loading">
+        <q-spinner-dots color="blue" size="5.5em" />
+      </div>
     </div>
   </q-layout>
 </template>
 
-<script>
-import MainContent from "./views/main-content/MainContent.vue";
-import Login from "./views/auth/Login.vue";
-import { ref } from "@vue/reactivity";
-import { useStore } from "vuex";
-import { computed } from "@vue/runtime-core";
-
-export default {
-  name: "LayoutDefault",
-  setup() {
-    const store = useStore();
-    let loginStatus = computed(() => {
-      return store.state.userModule.isLoggin;
-    });
-    let isDarkMode = computed(() => {
-      return store.state.userModule.isDarkMode;
-    });
-    const changeMode = () => {
-      console.log(isDarkMode.value);
-      store.dispatch("userModule/changeMode", !isDarkMode.value);
-    };
-    return {
-      leftDrawerOpen: ref(false),
-      loginStatus,
-      isDarkMode,
-      changeMode,
-    };
-  },
-  components: {
-    MainContent,
-    Login,
-  },
-};
-</script>
+<script src="./app.js" />

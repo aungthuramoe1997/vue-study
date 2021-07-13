@@ -1,11 +1,13 @@
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { computed } from "@vue/runtime-core";
 import { useStore } from "vuex";
 import { URL } from "../../const/Constant";
+import useCommon from "../../util/useCommon";
 export default {
   setup() {
     const store = useStore();
     const city = ref("yangon");
+    const { commonState, updateErrorStatus } = useCommon();
 
     onMounted(() => {
       searchWeatherByCity();
@@ -30,28 +32,29 @@ export default {
     let searchKeyword = ref("");
 
     const searchCity = () => {
-      console.log("city name ", searchKeyword.value);
       store.dispatch("weatherModule/getWeatherByCity", searchKeyword.value);
-      searching.value = true;
-      setTimeout(() => {
-        searching.value = false;
-      }, 2000);
     };
-
-    const searching = ref(false);
-
-    const cityNotFound = computed(() => {
-      return store.state.weatherModule.weatherNotFound;
-    });
 
     const clearSearch = () => {
       searchKeyword.value = "";
-      // console.log("default weather ", defaultWeather);
     };
 
     const isDarkMode = computed(() => {
       return store.state.userModule.isDarkMode;
     });
+
+    watch(
+      () => {
+        return { ...commonState };
+      },
+      (newValue) => {
+        if (newValue.error === true) {
+          setTimeout(() => {
+            updateErrorStatus({ error: false });
+          }, 4000);
+        }
+      }
+    );
 
     return {
       weather,
@@ -59,10 +62,9 @@ export default {
       weatherICON,
       searchKeyword,
       searchCity,
-      searching,
       clearSearch,
-      cityNotFound,
       isDarkMode,
+      commonState,
     };
   },
 };
