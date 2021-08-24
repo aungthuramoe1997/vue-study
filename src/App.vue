@@ -76,22 +76,6 @@
               <q-item-label>Posts</q-item-label>
             </q-item-section>
           </q-item>
-          <q-item clickable :to="{ name: 'Todos' }" exact>
-            <q-item-section avatar>
-              <q-icon name="task" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>Todos</q-item-label>
-            </q-item-section>
-          </q-item>
-          <q-item clickable :to="{ name: 'Users' }" exact>
-            <q-item-section avatar>
-              <q-icon name="people" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>Users</q-item-label>
-            </q-item-section>
-          </q-item>
           <q-item>
             <q-item-section avatar>
               <q-icon name="logout" />
